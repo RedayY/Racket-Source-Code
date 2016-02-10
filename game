@@ -1,0 +1,426 @@
+#lang racket/gui
+
+; Introductory Window
+
+
+(define introduction 
+  (new frame%
+       [label "Welcome!"]
+       [width 300] [height 100] ))
+
+(send introduction show #t) 
+(define vertical-panel 
+  (new vertical-panel%
+       [parent introduction] [alignment '(center center)] [spacing 20 ] [vert-margin 50]))
+
+(define opening-msg
+  (new message%
+       [parent vertical-panel]
+       [label "Welcome! Lets play Tic Tac Toe"])) 
+
+(define start-button 
+  (new button%
+       [parent introduction]
+       [label "Play!"] [min-width 100] [min-height 40]
+       [callback (λ (b e)
+                   (send introduction show #f) (send mygame show #t))]))
+       
+
+; Main Game
+
+;Struct for the Game
+
+(struct TTT (player1 player2) #:mutable)
+(define Game-begins (TTT #t #f))
+
+;Winning Vectors
+
+(define wv1 (make-vector 3))
+(define wv2 (make-vector 3))
+(define wv3 (make-vector 3))
+
+;Game Frame
+
+(define mygame ( new frame% 
+[ label "Tic Tac Toe"]
+[ width 200] [ height 300]))
+
+;Outer-most Panel
+
+(define vertical-panel1
+  (new vertical-panel%
+   [parent mygame ]))
+
+
+(define horizontal-panel
+  (new horizontal-panel%
+    [parent vertical-panel1]))
+
+
+(define vertical-panel2
+  (new vertical-panel%
+       [parent horizontal-panel]))
+
+
+(define button1
+  (new button%
+       [parent vertical-panel2]
+       
+    [label " "]
+    [callback (λ (x y)
+                  (send button1 enable #f)
+                 (cond
+                   ((equal? (TTT-player1 Game-begins) #t) (send button1 set-label "X")  (set-TTT-player1! Game-begins #f) (set-TTT-player2! Game-begins #t) (vector-set! wv1 0 1) (check1) )
+                   ((equal? (TTT-player2 Game-begins) #t) (send button1 set-label "O")  (set-TTT-player2!  Game-begins #f) (set-TTT-player1! Game-begins #t) (vector-set! wv1 0 2) (check1))                     
+                    ))]))
+
+              
+
+
+(define button2
+  (new button%
+       [parent vertical-panel2]
+       [label " "]
+       [callback (λ (x y)
+                  (send button2 enable #f) 
+                   (cond                   
+                   ((equal? (TTT-player1 Game-begins) #t) (send button2 set-label "X") (set-TTT-player1! Game-begins #f) (set-TTT-player2! Game-begins #t) (vector-set! wv2 0 1)(check1))     
+                   ((equal? (TTT-player2 Game-begins) #t) (send button2 set-label "O") (set-TTT-player2!  Game-begins #f) (set-TTT-player1! Game-begins #t)(vector-set! wv2 0 2)(check1)) 
+                   ))]))
+
+(define button3
+  (new button%
+       [parent vertical-panel2]
+       [label " "]
+       [callback (λ (x y)
+               (send button3 enable #f)
+                   (cond
+                   ((equal? (TTT-player1 Game-begins) #t) (send button3 set-label "X") (set-TTT-player1! Game-begins #f) (set-TTT-player2! Game-begins #t)(vector-set! wv3 0 1)(check1))
+                   ((equal? (TTT-player2 Game-begins) #t) (send button3 set-label "O") (set-TTT-player2!  Game-begins #f) (set-TTT-player1! Game-begins #t)(vector-set! wv3 0 2)(check1))
+               
+                  ))])) 
+
+
+
+(define vertical-panel3
+  (new vertical-panel%
+       [parent horizontal-panel]))
+
+(define button4
+  (new button%
+       [parent vertical-panel3]
+       [label " "]
+       [callback (λ (x y)
+              (send button4 enable #f)
+                  (cond
+                   ((equal? (TTT-player1 Game-begins) #t) (send button4 set-label "X") (set-TTT-player1! Game-begins #f) (set-TTT-player2! Game-begins #t)(vector-set! wv1 1 1)(check1))
+                   ((equal? (TTT-player2 Game-begins) #t) (send button4 set-label "O") (set-TTT-player2!  Game-begins #f) (set-TTT-player1! Game-begins #t)(vector-set! wv1 1 2)(check1))
+                
+                 ))])) 
+
+(define button5
+  (new button%
+       [parent vertical-panel3]
+       [label " "]
+       [callback (λ (x y)
+                 (send button5 enable #f)
+                   (cond
+                   ((equal? (TTT-player1 Game-begins) #t) (send button5 set-label "X") (set-TTT-player1! Game-begins #f) (set-TTT-player2! Game-begins #t)(vector-set! wv2 1 1)(check1))
+                   ((equal? (TTT-player2 Game-begins) #t) (send button5 set-label "O") (set-TTT-player2!  Game-begins #f) (set-TTT-player1! Game-begins #t)(vector-set! wv2 1 2)(check1))
+               
+                 ))])) 
+
+(define button6
+  (new button%
+       [parent vertical-panel3]
+       [label " "]
+       [callback (λ (x y)
+           (send button6 enable #f)
+                   (cond
+                   ((equal? (TTT-player1 Game-begins) #t) (send button6 set-label "X") (set-TTT-player1! Game-begins #f) (set-TTT-player2! Game-begins #t)(vector-set! wv3 1 1)(check1))
+                   ((equal? (TTT-player2 Game-begins) #t) (send button6 set-label "O") (set-TTT-player2!  Game-begins #f) (set-TTT-player1! Game-begins #t)(vector-set! wv3 1 2)(check1))
+                   
+                 ))])) 
+
+
+
+
+
+
+(define vertical-panel4
+  (new vertical-panel%
+       [parent horizontal-panel]))
+
+
+(define button7
+  (new button%
+       [parent vertical-panel4]
+       [label " "]
+       [callback (λ (x y)
+             (send button7 enable #f)
+                   (cond
+                   ((equal? (TTT-player1 Game-begins) #t) (send button7 set-label "X") (set-TTT-player1! Game-begins #f) (set-TTT-player2! Game-begins #t)(vector-set! wv1 2 1)(check1))
+                   ((equal? (TTT-player2 Game-begins) #t) (send button7 set-label "O") (set-TTT-player2!  Game-begins #f) (set-TTT-player1! Game-begins #t)(vector-set! wv1 2 2)(check1))
+                
+                 ))])) 
+(define button8
+  (new button%
+       [parent vertical-panel4]
+       [label " "]
+       [callback (λ (x y)
+            (send button8 enable #f)
+                   (cond
+                   ((equal? (TTT-player1 Game-begins) #t) (send button8 set-label "X") (set-TTT-player1! Game-begins #f) (set-TTT-player2! Game-begins #t)(vector-set! wv2 2 1)(check1))
+                   ((equal? (TTT-player2 Game-begins) #t) (send button8 set-label "O") (set-TTT-player2!  Game-begins #f) (set-TTT-player1! Game-begins #t)(vector-set! wv2 2 2)(check1))
+                
+              
+                ))])) 
+(define button9
+  (new button%
+       [parent vertical-panel4]
+       [label " "]
+       [callback (λ (x y)
+             (send button9 enable #f)
+                   
+                   (cond
+                   ((equal? (TTT-player1 Game-begins) #t) (send button9 set-label "X") (set-TTT-player1! Game-begins #f) (set-TTT-player2! Game-begins #t)(vector-set! wv3 2 1)(check1))
+                                                                                                                                             
+                   ((equal? (TTT-player2 Game-begins) #t) (send button9 set-label "O") (set-TTT-player2!  Game-begins #f) (set-TTT-player1! Game-begins #t)(vector-set! wv3 2 2)(check1))
+                  
+                  
+               ))])) 
+
+; Widgets for The Game
+
+
+(define horizontal-panel2
+  (new horizontal-panel%
+       [parent vertical-panel1]))
+
+
+(define Button-list '(button1 button2 button3 button4 button5 button6 button7 button8 button9))
+
+
+   (define restart-button
+  (new button%
+       [parent horizontal-panel2]
+       [label "Restart"]
+[callback (λ (b e)
+           (send button1 set-label " ") (set-TTT-player1! Game-begins #t)                               
+           (send button2 set-label " ")
+           (send button3 set-label " ")
+           (send button4 set-label " ")
+           (send button5 set-label " ")
+           (send button6 set-label " ")
+           (send button7 set-label " ")
+           (send button8 set-label " ")
+           (send button9 set-label " ")
+           (send button1 enable #t)
+           (send button2 enable #t)
+           (send button3 enable #t)
+           (send button4 enable #t)
+           (send button5 enable #t)
+           (send button6 enable #t)
+           (send button7 enable #t)
+           (send button8 enable #t)
+           (send button9 enable #t)
+           (vector-fill! wv1 0)
+           (vector-fill! wv2 0)
+           (vector-fill! wv3 0)
+)]))
+            
+       
+
+
+
+
+(define quit-button 
+  (new button%
+       [parent horizontal-panel2]
+       [label "Quit!"]
+[callback (λ (b e)
+             (send mygame show #f) 
+              )]))
+ 
+
+
+(define check1 (λ ()
+  (cond
+    ((= (vector-ref wv1 0) (vector-ref wv2 0) (vector-ref wv3 0) 1) (message-box "Winner!" "Player 1 wins"))
+    ((= (vector-ref wv1 1) (vector-ref wv2 1) (vector-ref wv3 1) 1) (message-box "Winner!" "Player 1 wins"))
+    ((= (vector-ref wv1 2) (vector-ref wv2 2) (vector-ref wv3 2) 1) (message-box "Winner!" "Player 1 wins"))
+
+    ((= (vector-ref wv1 0) (vector-ref wv1 1) (vector-ref wv1 2) 1) (message-box "Winner!" "Player 1 wins"))
+    ((= (vector-ref wv2 0) (vector-ref wv2 1) (vector-ref wv2 2) 1) (message-box "Winner" "Player 1 wins"))
+    ((= (vector-ref wv3 0) (vector-ref wv3 1) (vector-ref wv3 2) 1) (message-box "Winner!" "Player 1 wins"))
+
+    ((= (vector-ref wv1 0) (vector-ref wv2 1) (vector-ref wv3 2) 1) (message-box "Winner!" "Player 1 wins"))
+    ((= (vector-ref wv1 2) (vector-ref wv2 1) (vector-ref wv3 0) 1) (message-box "Winner!" "Player 1 wins"))
+  
+    ((= (vector-ref wv1 0) (vector-ref wv2 0) (vector-ref wv3 0) 2) (message-box "Winner!" "Player 2 wins"))
+    ((= (vector-ref wv1 1) (vector-ref wv2 1) (vector-ref wv3 1) 2) (message-box "Winner!" "Player 2 wins"))
+    ((= (vector-ref wv1 2) (vector-ref wv2 2) (vector-ref wv3 2) 2) (message-box "Winner!" "Player 2 wins"))
+
+    ((= (vector-ref wv1 0) (vector-ref wv1 1) (vector-ref wv1 2) 2) (message-box "Winner!" "Player 2 wins"))
+    ((= (vector-ref wv2 0) (vector-ref wv2 1) (vector-ref wv2 2) 2) (message-box "Winner!" "Player 2 wins"))
+    ((= (vector-ref wv3 0) (vector-ref wv3 1) (vector-ref wv3 2) 2) (message-box "Winner!" "Player 2 wins"))
+
+    ((= (vector-ref wv1 0) (vector-ref wv2 1) (vector-ref wv3 2) 2) (message-box "Winner!" "Player 2 wins"))
+    ((= (vector-ref wv1 2) (vector-ref wv2 1) (vector-ref wv3 0) 2) (message-box "Winner!" "Player 2 wins"))
+    (#t))))
+
+               
+
+               
+              
+
+
+
+ 
+
+
+
+
+
+
+
+          
+
+
+
+
+
+  
+
+
+
+;-----------ROUGH WORK------------
+ ;(define winning-pattern1 '(button1 button4 button7)) ;all possible winning patterns. 
+;(define winning-pattern2 '(button2 button5 button8))
+;(define winning-pattern3 '(button3 button6 button9))
+;(define winning-pattern4 '(button1 button6 button9))
+;(define winning-pattern5 '(button7 button6 button3))
+;(define winning-pattern6 '(button1 button2 button3))
+;(define winning-pattern7 '(button4 button5 button6))
+;(define winning-pattern8 '(button6 button7 button8))
+      
+
+
+;(send mygame show #t)
+;(send introduction show #t)
+
+
+;(define undo-button
+ ; (new button%
+  ;     [parent horizontal-panel2]qwemfn qejfB
+   ;    [label "Undo"]))
+
+
+
+
+ ;(displayln "aduhakhd")
+;(cond
+ ; ((equal? bb b1) displayln "equal")
+  ;(#t displayln "not equal"))
+
+
+;(define bb '())
+;(define b1 '())
+
+;(set! bb (append '(X) bb))
+;(set! b1 (append '(O) b1))
+
+
+
+  ;(for/and ([i '(1 2 3 4)]) i)
+ ;              
+  ;             (for/and ((i '((send button1 get-label) (send button2 get-label) (send button3 get-label))))
+;
+;
+ ;                (cond ((equal? i "X") (message-box "Winner!" "P1 Wins!"))(else (message-box "no" "no")))))]))
+  ;                     ; )))))
+
+             
+;(define ch (lambda ()
+               
+;(for/and ((i '((send button1 get-label) (send button2 get-label) (send button3 get-label))))
+
+;(cond ((equal? i "X") (message-box "Winner!" "P1 Wins!"))
+ ;     (#f))
+
+  ;)))
+
+;(define ((make-check i) btn evt)
+ ; (message-box "." (cond
+  ;      ((equal? (and (send button1 get-label) (send button2 get-label) (send button3 get-label)) "X") (displayln "Player1 Wins!") ))))
+        ;((> i secret) "Wrong! Sorry this number is too small"]
+        ;(else "YES! Thats right!"
+
+;(define final-stage (λ ()
+   ;                   (cond
+  ;                      ((for/and ([i '((send button1 get-label) (send button2  get-label) (send button3 get-label) "X")]) (equal? i "X")) (message-box "Winner!" "P1 Wins!"))
+ ;                       ) ))
+;
+
+
+
+;(define loop)
+
+     
+            ;   (cond
+
+             ;    ((equal?(send button1 get-label) "X") (message-box "winner" "hahaha"))
+              ;   (#t (message-box "not won" "mamama"))))]))
+
+
+;(define tester (lambda ()
+;
+ ;                  ((for/and ([i '((send button1 get-label) (send button2  get-label) (send button3 get-label) "X")]) (equal? i "X")) (message-box "Winner!" "P1 Wins!"))
+  ;                      ))
+
+
+;(define check1 (lambda ()
+ ;            (cond
+     ;          ((equal? (and (send button1 get-label) (send button2  get-label) (send button3 get-label)) "X") (send winner1 show #t)(send winner2 show #f)) ;(message-box "Winner!" "P1 Wins!"))
+    ;           ((equal? (and (send button1 get-label) (send button2  get-label) (send button3 get-label)) "O") (send winner1 show #f) (send winner2 show #t)) ;(message-box "Winner!" "P2 Wins!"))
+              
+
+
+  ;             ((equal? (and (send button1 get-label) (send button4  get-label) (send button7 get-label)) "X") (send winner1 show #t)(send winner2 show #f))
+   ;            ((equal? (and (send button1 get-label) (send button4  get-label) (send button7 get-label)) "O") (send winner1 show #f)(send winner2 show #t))
+               
+
+
+ ;              ((equal? (and (send button2 get-label) (send button5  get-label) (send button8 get-label)) "X") (send winner1 show #t)(send winner2 show #f))
+;               ((equal? (and (send button2 get-label) (send button5  get-label) (send button8 get-label)) "O") (send winner1 show #f)(send winner2 show #t))
+               
+
+
+               ;((equal? (and (send button3 get-label) (send button6  get-label) (send button9 get-label)) "X") (send winner1 show #t)(send winner2 show #f))
+               ;((equal? (and (send button3 get-label) (send button6  get-label) (send button9 get-label)) "O") (send winner1 show #f)(send winner2 show #t))
+           
+
+
+               ;((equal? (and (send button1 get-label) (send button5  get-label) (send button9 get-label)) "X") (send winner1 show #t)(send winner2 show #f))
+              ; ((equal? (and (send button1 get-label) (send button5  get-label) (send button9 get-label)) "O") (send winner1 show #f)(send winner2 show #t))
+              
+
+            
+             ; ((equal? (and (send button4 get-label) (send button5  get-label) (send button6 get-label)) "X") (send winner1 show #t)(send winner2 show #f))
+             ; ((equal? (and (send button4 get-label) (send button5  get-label) (send button6 get-label)) "O")(send winner1 show #f)(send winner2 show #t))
+             
+
+
+             ; ((equal? (and (send button7 get-label) (send button8  get-label) (send button9 get-label)) "X") (send winner1 show #t) (send winner2 show #f))
+             ; ((equal? (and (send button7 get-label) (send button8  get-label) (send button9 get-label)) "O")(send winner1 show #f)(send winner1 show #t))
+              
+             ; ((equal? (and (send button7 get-label) (send button5  get-label) (send button3 get-label)) "X")(send winner1 show #t) (send winner2 show #f))
+              ;((equal? (and (send button7 get-label) (send button5  get-label) (send button3 get-label)) "O")(send winner1 show #f)(send winner2 show #t))
+               
+               ;)))
+
+
+
+
+
+
